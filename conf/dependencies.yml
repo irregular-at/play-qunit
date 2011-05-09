@@ -1,0 +1,4 @@
+self: irregular.at -> qunit dev
+
+require:
+    - play
