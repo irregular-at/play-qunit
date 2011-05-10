@@ -79,7 +79,7 @@ $(function() {
 		$('.touch', test).html('-');
 		$('.testResult', test).html(result).show();
 		window.top.document.title = title;
-		stop();
+		runNextTest();
 	};
 	
 	/**
