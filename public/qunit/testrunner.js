@@ -7,12 +7,6 @@ $(function() {
 	}).ajaxStop(function() {
 		$(this).hide();
 	});
-	
-	var testError = function(msg) {
-		window.location = bookmark()
-		stop();
-		updateSelected();
-	}
 			
 	var run = function() {
 		updateSelected();
@@ -20,8 +14,16 @@ $(function() {
 		$('.test, #header').removeClass('passed').removeClass('failed');
 		
 		runNextTest();
-	}
-
+	};
+	
+	// run a single QUnit test file
+	var runTest = function(testId, test) {
+		test.addClass('passing');
+		$('.touch', test).html('&nbsp;');
+		$('#qunit,#qunit-mask').show();
+		$('#qunit-runner').attr('src', baseUrl() + '/run' + testId);
+	};
+	
 	// runs the next test
 	var runNextTest = function() {
 		if($(document.body).is('.running')) {
@@ -33,29 +35,12 @@ $(function() {
 				result();
 			}
 		}					
-	}
-	
-	// run a single QUnit test file
-	var runTest = function(testId, test) {
-		var frame =  window.frames[0];
-		
-		test.addClass('passing');
-		$('.touch', test).html('&nbsp;');
-		$('#qunit,#qunit-mask').show();
-		$('#qunit-runner').attr('src', baseUrl() + '/run' + testId);
-		
-		window.QUnit = {};
-		window.QUnit.done = function(result) {
-			testSuccess(test, 'success!');
-			$('#qunit,#qunit-mask').hide();
-		}
 	};
 	
 	// show the test result (= stop)
 	var result = function() {
 		$('#qunit-mask, #qunit').hide();
 		$('#qunit-runner').attr('src', 'about:blank');
-		clearInterval(window.checkResult);
 		$(document.body).removeClass('running');
 		$('.passing').removeClass('passing');
 		if($('.test.failed').size()) {
@@ -97,9 +82,78 @@ $(function() {
 		stop();
 	};
 	
+	/**
+	 * Callback function that is called, when a QUnit test is finished in the runner
+	 * @param result The test result of the test.
+	 */
+	window.testFinished = function (result) {
+		var test = $('.test.selected:not(.passed,.failed):first');
+		
+		$('#qunit,#qunit-mask').hide();
+		
+		var html = ((result.summary.failed === 0) ? 'No' : ('<strong>' + result.summary.failed + '</strong>')) 
+			+ ' test(s) failed of total ' + result.summary.total + ' tests'
+			+ ' Runtime: ' + result.summary.runtime + ' ms'
+			+ '<table><tbody>';
+		
+		$.each(result.tests, function(index, test){
+			html += '<tr>'
+				+ '<td width="20%" class="' + ((test.result) ? 'passed' : 'failed') + '" valign="top">'
+				+ '<span>' + test.name + '</span>'
+				+ '</td>'
+				+ '<td valign="top">';
+			if (test.result === false) {
+				html += '<strong class="error">' + test.message + '</strong>'
+					+ '<table class="failure"><tbody>'
+					+ '<tr><td class="description">Expected:</td><td>' + test.expected + '</td></tr>'
+					+ '<tr class="error"><td class="description">Actual:</td><td>' + test.actual + '</td></tr>'
+					+ '<tr><td class="description">Source:</td><td>' + test.source + '</td></tr>'
+					+ '</tbody></table>';
+			} else {
+				html += '<strong class="success">Ok</strong>';
+			}
+			html += '</td></tr>';
+		});
+		html += '</tbody></table>';
+		
+		if (result.summary.failed !== 0) {
+			testFail(test, html);
+		} else {
+			testSuccess(test, html);
+		}
+	};
+	
 	// stops the tests
 	var stop = function() {
 		result();
+	};
+	
+	// get the url of the base qunit
+	var baseUrl = function() {
+		var url = 'http://'+document.location.host;
+		if(document.location.port && url.indexOf(":") === -1) {
+			url += ':'+document.location.port;
+		}
+		url += document.location.pathname;
+		
+		return url;
+	};
+	
+	// bookmark url for the selected tests
+	var bookmark = function() {
+		var url = baseUrl();
+		url += '?select=';
+		var v = false;
+		$('.test.selected').each(function() {
+			if(v) {
+				url += ',';
+			}
+			url += $(this).attr('id');	
+			v = true;
+		});
+		if(url) {
+			return url;
+		}
 	};
 	
 	// update the view of selected tests
@@ -122,37 +176,14 @@ $(function() {
 		$('.test, #header').removeClass('passed').removeClass('failed');
 		$('.touch').html('&sim;');
 		$('.testResult').hide();
-	}
-
-	// get the url of the base qunit
-	var baseUrl = function() {
-		var url = 'http://'+document.location.host;
-		if(document.location.port && url.indexOf(":") == -1) {
-			url += ':'+document.location.port;
-		}
-		url += document.location.pathname;
-		
-		return url;
-	}
-	
-	// bookmark url for the selected tests
-	var bookmark = function() {
-		var url = baseUrl();
-		url += '?select=';
-		var v = false;
-		$('.test.selected').each(function() {
-			if(v) url += ',';
-			url += $(this).attr('id');	
-			v = true;					
-		});
-		if(url)
-			return url;
-	}
+	};
 	
 	// click on a test
 	$('.test a').click(function(e) {
 		e.preventDefault();
-		if($(document.body).is('.running')) return;
+		if($(document.body).is('.running')) {
+			return;
+		}
 		$(this).closest('.test').toggleClass('selected');
 		updateSelected();
 	});
@@ -160,18 +191,20 @@ $(function() {
 	// Toggle +/- click
 	$('.test .touch').click(function(e) {
 		e.preventDefault();
-		var test = $(this).closest('.test')
+		var test = $(this).closest('.test');
 		if($(test).is('.failed,.passed')) {
 			$('.testResult', test).toggle();
-			$(this).html( $(this).html() == '-' ? '+' : '-' );
+			$(this).html( $(this).html() === '-' ? '+' : '-' );
 		}
 	});
 	
 	// Update selected when clicking heading
 	$('#tests h2 span').click(function() {
-		if($(document.body).is('.running')) return;
+		if($(document.body).is('.running')) {
+			return;
+		}
 		var ul = $(this).parent().next('ul');
-		if( $('.test', ul).size() ==  $('.test.selected', ul).size() ) {
+		if( $('.test', ul).size() ===  $('.test.selected', ul).size() ) {
 			$('.test', ul).removeClass('selected');
 		} else {
 			$('.test', ul).addClass('selected');
@@ -181,7 +214,9 @@ $(function() {
 	
 	// start button
 	$('#start').click(function() {
-		if($(this).is('.disabled')) return;
+		if($(this).is('.disabled')) {
+			return;
+		}
 		run();
 	});
 	
@@ -218,7 +253,7 @@ $(function() {
 	// select the bookmarked tests
 	if(/select=/.exec(document.location.search)) {
 		var toSelect = /select=([^&]+)/.exec(document.location.search)[1].split(',');
-		if(toSelect[0] == 'all') {
+		if(toSelect[0] === 'all') {
 			$('.test').addClass('selected');
 		} else {
 			$(toSelect).each(function() {

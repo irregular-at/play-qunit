@@ -191,6 +191,22 @@ li {
 .testResult .error {
 	color: #c00;
 }
+.testResult .success {
+	color: #9BCF81;
+}
+.testResult .failure {
+	margin: 5px 0 0 0;
+	padding: 0;
+	border-collapse: collapse;
+}
+.testResult .failure td {
+	padding: 0;
+	margin: 0;
+}
+.testResult .failure .description {
+	width: 1px;
+	padding-right: 10px;
+}
 .testResult .time {
 	color: #999;
 }
