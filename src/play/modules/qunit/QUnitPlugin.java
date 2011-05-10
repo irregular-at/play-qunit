@@ -9,7 +9,8 @@ public class QUnitPlugin extends PlayPlugin {
 	
 	public void onRoutesLoaded() {
 		if(! Play.mode.isProd()) {
-			Router.addRoute("GET", "/@qunit/?", "qunit.Qunit.list");
+			Router.addRoute("GET", "/@qunit", "qunit.Qunit.list");
+			Router.addRoute("GET", "/@qunit/run{<.*>test}", "qunit.Qunit.run");
 		}
 	};
 	

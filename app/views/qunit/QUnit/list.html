@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<title>Play! - Qunit tests</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<link rel="stylesheet" href="@{'public/qunit/testrunner.css'}" />
+		
+		<script src="@{'/public/qunit/jquery-1.6.min.js'}" type="text/javascript" charset="utf-8"></script>
+		<script src="@{'/public/qunit/jquery.scrollTo-min.js'}" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript" src="@{'public/qunit/testrunner.js'}" charset="utf-8"></script>
+	</head>
+	<body>
+		<div id="header" class="block">
+			<h1>
+				Qunit Tests
+			</h1>		   
+			<p>
+				<strong>Select the tests to run</strong>, then click [Start] and pray
+			</p>
+			<div id="loading">working ...</div>
+		</div>
+		<div id="results" class="block">
+			
+			<div id="stopped">
+				<span id="start">Start !</span>
+				&nbsp;
+				<span class="nbToRun">no</span> test<span class="nbToRunPluralize"></span> to run <span id="bms">(<a id="" href="#">Bookmark this link to save this configuration</a>) - <span id="unselectAll"><a id="" href="#">Unselect all</a></span></span>
+				
+				<span id="quickLinks">
+					<span id="sa">(<a id="" href="#">Select all</a></span> -
+					<span id="ra"><a id="" href="#">Run all</a>)</span>
+				</span>
+			</div>
+			
+			<div id="started">
+				<span id="stop">Stop ...</span>
+				&nbsp;(running <span class="nbToRun">no</span> test<span class="nbToRunPluralize"></span>)
+			</div>
+			
+			<div id="finished">
+				
+			</div>
+			
+		</div>
+			
+		<div id="tests" class="block">
+			<h2><span>${'There ' + tests.size().pluralize('is', 'are')} ${tests.size()} QUnit test${tests.size().pluralize()}</span></h2>
+			<ul>
+				#{list items:tests, as:'test'}
+				<li>
+					<div class="test" id="${test.getAbsolutePath()}">
+						<span class="touch">+</span><a href="@{qunit.Qunit.run(test.getAbsolutePath())}">${test.getName()}</a>
+						<div class="testResult"></div>
+					</div>
+				</li>
+				#{/list}
+			</ul>
+		</div>
+		<div id="qunit-mask"></div>
+		<div id="qunit">
+			Play is running a QUnit test... <span id="stopQUnit">Stop it</span>
+			<iframe id="qunit-runner" width="100%" height="100%" src="about:blank"></iframe>
+		</div>
+	</body>
+</html>
