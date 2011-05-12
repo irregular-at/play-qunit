@@ -7,7 +7,18 @@ $(function() {
 	}).ajaxStop(function() {
 		$(this).hide();
 	});
-			
+	
+	// get the url of the base qunit
+	var baseURL = function() {
+		var url = 'http://'+document.location.host;
+		if(document.location.port && url.indexOf(":") === -1) {
+			url += ':'+document.location.port;
+		}
+		url += document.location.pathname;
+		
+		return url;
+	};
+	
 	var run = function() {
 		updateSelected();
 		$(document.body).addClass('running');
@@ -21,7 +32,7 @@ $(function() {
 		test.addClass('passing');
 		$('.touch', test).html('&nbsp;');
 		$('#qunit,#qunit-mask').show();
-		$('#qunit-runner').attr('src', baseUrl() + '/run' + testId);
+		$('#qunit-runner').attr('src', baseURL() + '/run' + testId);
 	};
 	
 	// runs the next test
@@ -34,7 +45,7 @@ $(function() {
 			} else {
 				result();
 			}
-		}					
+		}
 	};
 	
 	// show the test result (= stop)
@@ -83,6 +94,25 @@ $(function() {
 	};
 	
 	/**
+	 * Posts back the result, so taht the server writes an xunit file
+	 */
+	var writeXUnit = function(testId, result) {
+		result.test = testId;
+	    $.ajax({
+	    		url : baseURL() + '/result',
+	    		type : 'POST',
+	    		data : {result : JSON.stringify(result)},
+	    		dataType : 'json',
+	    		success : function() {
+	    			console.log('success');
+	    		},
+	    		error : function() {
+	    			console.log('error');
+	    		}
+	    });
+	};
+	
+	/**
 	 * Callback function that is called, when a QUnit test is finished in the runner
 	 * @param result The test result of the test.
 	 */
@@ -121,6 +151,8 @@ $(function() {
 		} else {
 			testSuccess(test, html);
 		}
+		
+		writeXUnit(test.attr('id'), result);
 	};
 	
 	// stops the tests
@@ -128,20 +160,9 @@ $(function() {
 		result();
 	};
 	
-	// get the url of the base qunit
-	var baseUrl = function() {
-		var url = 'http://'+document.location.host;
-		if(document.location.port && url.indexOf(":") === -1) {
-			url += ':'+document.location.port;
-		}
-		url += document.location.pathname;
-		
-		return url;
-	};
-	
 	// bookmark url for the selected tests
 	var bookmark = function() {
-		var url = baseUrl();
+		var url = baseURL();
 		url += '?select=';
 		var v = false;
 		$('.test.selected').each(function() {

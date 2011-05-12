@@ -5,6 +5,7 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 		<link rel="stylesheet" href="@{'public/qunit/testrunner.css'}" />
 		
+		<script src="@{'/public/qunit/json2.js'}" type="text/javascript" charset="utf-8"></script>
 		<script src="@{'/public/qunit/jquery-1.6.min.js'}" type="text/javascript" charset="utf-8"></script>
 		<script src="@{'/public/qunit/jquery.scrollTo-min.js'}" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript" src="@{'public/qunit/testrunner.js'}" charset="utf-8"></script>
@@ -48,8 +49,8 @@
 			<ul>
 				#{list items:tests, as:'test'}
 				<li>
-					<div class="test" id="${test.getAbsolutePath()}">
-						<span class="touch">+</span><a href="@{qunit.Qunit.run(test.getAbsolutePath())}">${test.getName()}</a>
+					<div class="test" id="${test.relativePath()}">
+						<span class="touch">+</span><a href="@{qunit.Qunit.run(test.relativePath())}">${test.getName()}</a>
 						<div class="testResult"></div>
 					</div>
 				</li>

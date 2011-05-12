@@ -1,8 +1,12 @@
 package controllers.qunit;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
+
+import models.qunit.TestResult;
 
 import org.apache.commons.io.FileUtils;
 
@@ -13,13 +17,21 @@ import play.templates.Template;
 import play.templates.TemplateLoader;
 import play.vfs.VirtualFile;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
+
 public class QUnit extends Controller {
 
 	/**
 	 * List of the available qunit tests.
 	 */
 	public static void list() {
-		ArrayList<File> tests = findQUnitTests();
+		ArrayList<File> testFiles = findQUnitTests();
+		LinkedList<VirtualFile> tests = new LinkedList<VirtualFile>();
+		for (File testFile : testFiles) {
+			tests.add(VirtualFile.open(testFile));
+		}
+
 		render(tests);
 	}
 
@@ -29,11 +41,35 @@ public class QUnit extends Controller {
 	 * @param test The path of the test to run.
 	 */
 	public static void run(String test) {
-		VirtualFile testFile = VirtualFile.open(test);
+		VirtualFile testFile = VirtualFile.fromRelativePath(test);
 		Template template = TemplateLoader.load(testFile);
 		throw new RenderTemplate(template, new HashMap<String, Object>());
 	}
 
+	/**
+	 * Writes the result to a junit test result file
+	 * @param result
+	 */
+	public static void result(String result) {
+		TestResult testResult = new Gson().fromJson(new JsonParser().parse(result), TestResult.class);
+		
+		HashMap<String, Object> params = new HashMap<String, Object>();
+		params.put("result", testResult);
+		String xml = TemplateLoader.load("qunit/QUnit/xunit.xml").render(params);
+
+		try {
+			String fileName = testResult.test.replace("/", ".");
+			fileName = fileName.substring(1, fileName.lastIndexOf(".")) + ".xml";
+			
+			VirtualFile xmlFile = VirtualFile.fromRelativePath("/test-result/" + fileName);
+			xmlFile.getRealFile().getParentFile().mkdirs();
+			
+			FileUtils.write(xmlFile.getRealFile(), xml);
+		} catch (IOException ioe) {
+			error(ioe);
+		}
+	};
+	
 	/**
 	 * Finds qunit tests in all modules and the application.
 	 * 
