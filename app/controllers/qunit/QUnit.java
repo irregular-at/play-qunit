@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.regex.Pattern;
 
 import models.qunit.TestResult;
 
@@ -58,10 +59,7 @@ public class QUnit extends Controller {
 		String xml = TemplateLoader.load("qunit/QUnit/xunit.xml").render(params);
 
 		try {
-			String fileName = testResult.test.replace("/", ".");
-			fileName = fileName.substring(1, fileName.lastIndexOf(".")) + ".xml";
-			
-			VirtualFile xmlFile = VirtualFile.fromRelativePath("/test-result/" + fileName);
+			VirtualFile xmlFile = VirtualFile.fromRelativePath("/test-result/" + getXMLName(testResult.test));
 			xmlFile.getRealFile().getParentFile().mkdirs();
 			
 			FileUtils.write(xmlFile.getRealFile(), xml);
@@ -69,6 +67,23 @@ public class QUnit extends Controller {
 			error(ioe);
 		}
 	};
+	
+	/**
+	 * Get the display name of a test from the vfs relative path
+	 */
+	public static String getTestName(String vfsPath) {
+		 String testName = vfsPath.replaceFirst("\\{.*?\\}", "");
+		 testName = testName.substring("/test/qunit/".length());
+		 testName = testName.substring(0, testName.lastIndexOf("."));
+		 return testName;
+	}
+	
+	/**
+	 * Get the name of the xml file from the vfsPath
+	 */
+	private static String getXMLName(String vfsPath) {
+		return "qunit." + getTestName(vfsPath).replace("/", ".") + ".xml";
+	}
 	
 	/**
 	 * Finds qunit tests in all modules and the application.
