@@ -2,4 +2,5 @@
 .project
 commands.pyc
 bin/
+dist/
 lib/play-qunit.jar
