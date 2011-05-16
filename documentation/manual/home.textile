@@ -1,0 +1,46 @@
+h1. QUnit Module
+
+This module provides integration of "Javascript QUnit tests":http://docs.jquery.com/Qunit in play applications.
+It aims to provide a nice integration of QUnit in Play! just as the built-in JUnit support.
+
+The benefits of using this module are:
+
+* You can use Play! templating syntax in QUnit tests
+* Friendly running and error reporting of QUnit tests directly from the application
+* Running all tests automatically by simply accessing one URL in the browser
+* Generated JUnit compatible XML test reports for continuous integration
+
+h1. Using Play! QUnit Tests
+
+All files stored under ??test/qunit/?? directory that end in ??.html?? are recognized by the module as QUnit tests. Subfolders can be used to group tests. In the JUnit reports the subfolders are treated like packages.
+
+h2. Writing a Test
+
+Write a standard QUnit test as described in the "documentation":http://docs.jquery.com/Qunit, but instead of including the QUnit dependencies manually use: 
+
+bc.. #{qunit.include /}
+p. This tag includes qunit.js and qunit.css as well as a little helper javascript that the Play! QUnit Module needs to generate the JUnit XML reports.
+
+h2. Running the Tests
+
+The tests are published only in development mode. So if the application is run in production mode, the tests are not available.
+
+Visit the path ??/@qunit?? of the application in the browser to get a list of all tests. Example:
+
+bc.. http://localhost:9000/@qunit
+p. Here you can select the tests to run and start them by pressing ??Start !?? just like in the standard play testrunner. Bookmarking the current selection is also supported.
+
+The url parameter ??select=all?? can be used to select all tests. To automatically run the tests the parameter ??auto=yes?? can be used.
+
+bc.. http://localhost:9000/@qunit?select=all&auto=yes
+p. The URL above will run all tests automatically when the URL is visited.
+
+h2. JUnit Tests Reports and Continuous Integration
+
+Test results are published after each testrun into ??test-result/qunit.*.xml??. The xml files are JUnit compatible and therefore can be used as input for a continuous integration server like jenkins or bamboo.
+
+The module doesn't provide a way to launch the tests automatically in a browser. This task is too specific to the application environment. For example Selenium Remote Control can be used to easily launch the tests in various browsers.  
+
+h1. Requirements
+
+p(note). This module was tested with Play! 1.2 and therefore uses this as minimum requirement. Probably it will also work without modification in Play! 1.1. If you have tested it successfully with Play! 1.1 please let me know.
