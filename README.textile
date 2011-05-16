@@ -1,0 +1,20 @@
+h1. Play! QUnit Module
+
+The Play! QUnit module provides integration of QUnit Javascript unit tests with the "Play! Framework":http://www.playframework.org.
+
+Features:
+
+* Use Play! templating syntax in QUnit tests
+* Friendly running and error reporting of QUnit tests directly from the application
+* Running all tests automatically by simply accessing one URL in the browser
+* Generated JUnit compatible XML test reports for continuous integration
+
+For detailed features and instructions on how to use the module have a look at the module section on http://www.playframework.org. 
+ 
+h2. Licence
+
+Play QUnit module is distributed under "Apache 2 licence":http://www.apache.org/licenses/LICENSE-2.0.html.
+
+Some files especially ??public/qunit/testrunner.js??, ??public/qunit/testrunner.css?? are derived work from the Play! testrunner module which is also licenced under Apache 2 licence.
+
+Some files under ??public/qunit?? are from third parties and are licensed under their own terms. These license information can be found on top of the files.
