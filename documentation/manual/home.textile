@@ -19,6 +19,7 @@ h2. Writing a Test
 Write a standard QUnit test as described in the "documentation":http://docs.jquery.com/Qunit, but instead of including the QUnit dependencies manually use: 
 
 bc.. #{qunit.include /}
+
 p. This tag includes qunit.js and qunit.css as well as a little helper javascript that the Play! QUnit Module needs to generate the JUnit XML reports.
 
 h2. Running the Tests
@@ -28,11 +29,13 @@ The tests are published only in development mode. So if the application is run i
 Visit the path ??/@qunit?? of the application in the browser to get a list of all tests. Example:
 
 bc.. http://localhost:9000/@qunit
+
 p. Here you can select the tests to run and start them by pressing ??Start !?? just like in the standard play testrunner. Bookmarking the current selection is also supported.
 
 The url parameter ??select=all?? can be used to select all tests. To automatically run the tests the parameter ??auto=yes?? can be used.
 
 bc.. http://localhost:9000/@qunit?select=all&auto=yes
+
 p. The URL above will run all tests automatically when the URL is visited.
 
 h2. JUnit Tests Reports and Continuous Integration

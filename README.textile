@@ -9,7 +9,7 @@ Features:
 * Running all tests automatically by simply accessing one URL in the browser
 * Generated JUnit compatible XML test reports for continuous integration
 
-For detailed features and instructions on how to use the module have a look at the module section on http://www.playframework.org. 
+For detailed features and instructions on how to use the module have a look at the module "documentation":https://github.com/irregular-at/play-qunit/blob/master/documentation/manual/home.textile.
  
 h2. Licence
 
