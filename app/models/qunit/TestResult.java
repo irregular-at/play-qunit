@@ -15,6 +15,11 @@ public class TestResult {
 	public String test;
 	
 	/**
+	 * Name of the browser
+	 */
+	public String browser;
+	
+	/**
 	 * Summary for all tests
 	 */
 	public TestSummary summary;
@@ -45,7 +50,11 @@ public class TestResult {
 	 * Get the the fully qualified test name in "." notation.
 	 */
 	public String getFQName() {
-		return "qunit." + getTestName().replace("/", ".");
+		if (browser == null || "".equals(browser)) {
+			return "qunit." + getTestName().replace("/", ".");
+		} else {
+			return "qunit." + browser + "." + getTestName().replace("/", ".");
+		}
 	}
 	
 	public static class TestSummary {

@@ -1,5 +1,11 @@
 $(function() {
 	var title = window.top.document.title;
+	var browser = "";
+	
+	// extract the browser
+	if(/browser=/.exec(document.location.search)) {
+		browser = /browser=([^&]+)/.exec(document.location.search)[1];
+	}
 	
 	// ajax status
 	$('#loading').ajaxStart(function() {
@@ -97,6 +103,7 @@ $(function() {
 	 * Posts back the result, so taht the server writes an xunit file
 	 */
 	var writeXUnit = function(testId, result) {
+		result.browser = browser;
 		result.test = testId;
 	    $.ajax({
 	    		url : baseURL() + '/result',

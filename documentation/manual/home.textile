@@ -42,6 +42,8 @@ h2. JUnit Tests Reports and Continuous Integration
 
 Test results are published after each testrun into ??test-result/qunit.*.xml??. The xml files are JUnit compatible and therefore can be used as input for a continuous integration server like jenkins or bamboo.
 
+The url parameter ??browser?? can be set to any string. This string gets added to the tests name. If the tests run in multiple browsers the results would overwrite each other. To avoid this the ??browser?? url parameter can be set to any string, which will prefix the test-result name. 
+
 The module doesn't provide a way to launch the tests automatically in a browser. This task is too specific to the application environment. For example Selenium Remote Control can be used to easily launch the tests in various browsers.  
 
 h1. Requirements
