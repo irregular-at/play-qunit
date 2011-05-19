@@ -58,7 +58,7 @@ public class QUnit extends Controller {
 		String xml = TemplateLoader.load("qunit/QUnit/xunit.xml").render(params);
 
 		try {
-			VirtualFile xmlFile = VirtualFile.fromRelativePath("/test-result/" + getXMLName(testResult.test));
+			VirtualFile xmlFile = VirtualFile.fromRelativePath("/test-result/" + testResult.getFQName() + ".xml");
 			xmlFile.getRealFile().getParentFile().mkdirs();
 			
 			FileUtils.write(xmlFile.getRealFile(), xml);
@@ -66,23 +66,6 @@ public class QUnit extends Controller {
 			error(ioe);
 		}
 	};
-	
-	/**
-	 * Get the display name of a test from the vfs relative path
-	 */
-	public static String getTestName(String vfsPath) {
-		 String testName = vfsPath.replaceFirst("\\{.*?\\}", "");
-		 testName = testName.substring("/test/qunit/".length());
-		 testName = testName.substring(0, testName.lastIndexOf("."));
-		 return testName;
-	}
-	
-	/**
-	 * Get the name of the xml file from the vfsPath
-	 */
-	private static String getXMLName(String vfsPath) {
-		return "qunit." + getTestName(vfsPath).replace("/", ".") + ".xml";
-	}
 	
 	/**
 	 * Finds qunit tests in all modules and the application.

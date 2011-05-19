@@ -50,7 +50,7 @@
 				#{list items:tests, as:'test'}
 				<li>
 					<div class="test" id="${test.relativePath()}">
-						<span class="touch">+</span><a href="@{qunit.Qunit.run(test.relativePath())}">${controllers.qunit.QUnit.getTestName(test.relativePath())}</a>
+						<span class="touch">+</span><a href="@{qunit.Qunit.run(test.relativePath())}">${models.qunit.TestResult.getTestName(test.relativePath())}</a>
 						<div class="testResult"></div>
 					</div>
 				</li>

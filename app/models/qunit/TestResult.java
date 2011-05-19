@@ -24,6 +24,30 @@ public class TestResult {
 	 */
 	public List<Test> tests;
 	
+	/**
+	 * Get the display name of a test from the vfs relative path
+	 */
+	public String getTestName() {
+		return getTestName(test);
+	}
+	
+	/**
+	 * Static method to convert a vfs path to a test into a readable test name.
+	 */
+	public static String getTestName(String vfsPath) {
+		String testName = vfsPath.replaceFirst("\\{.*?\\}", "");
+		testName = testName.substring("/test/qunit/".length());
+		testName = testName.substring(0, testName.lastIndexOf("."));
+		return testName;		
+	}
+	
+	/**
+	 * Get the the fully qualified test name in "." notation.
+	 */
+	public String getFQName() {
+		return "qunit." + getTestName().replace("/", ".");
+	}
+	
 	public static class TestSummary {
 		public int failed;
 		public int passed;
