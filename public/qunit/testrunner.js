@@ -103,11 +103,10 @@ $(function() {
 	    		type : 'POST',
 	    		data : {result : JSON.stringify(result)},
 	    		dataType : 'json',
-	    		success : function() {
-	    			console.log('success');
-	    		},
 	    		error : function() {
-	    			console.log('error');
+	    			if(typeof console !== 'undefined') {
+	    				console.log('error');
+	    			}
 	    		}
 	    });
 	};
