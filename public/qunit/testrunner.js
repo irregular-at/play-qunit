@@ -102,7 +102,7 @@ $(function() {
 	/**
 	 * Posts back the result, so taht the server writes an xunit file
 	 */
-	var writeXUnit = function(testId, result) {
+	var writeXUnit = function(testId, result, callback) {
 		result.browser = browser;
 		result.test = testId;
 	    $.ajax({
@@ -114,6 +114,10 @@ $(function() {
 	    			if(typeof console !== 'undefined') {
 	    				console.log('error');
 	    			}
+	    			callback(arguments);
+	    		},
+	    		success : function() {
+	    			callback(arguments);
 	    		}
 	    });
 	};
@@ -152,13 +156,15 @@ $(function() {
 		});
 		html += '</tbody></table>';
 		
-		if (result.summary.failed !== 0) {
-			testFail(test, html);
-		} else {
-			testSuccess(test, html);
-		}
+		writeXUnit(test.attr('id'), result, function() {
+			// after xunit write had success or error, we launch the next test
+			if (result.summary.failed !== 0) {
+				testFail(test, html);
+			} else {
+				testSuccess(test, html);
+			}
+		});
 		
-		writeXUnit(test.attr('id'), result);
 	};
 	
 	// stops the tests
