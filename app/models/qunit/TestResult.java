@@ -67,6 +67,7 @@ public class TestResult {
 	public static class Test {
 		public String name;
 		public boolean result;
+		public long runtime;
 		public String actual;
 		public String expected;
 		public String message;

@@ -1,6 +1,7 @@
 (function() {
 	var testRunner = window.parent;
-	var lastFailed, tests = [];	
+	var lastFailed, tests = [];
+	var lastStart;
 	
 	/**
 	 * Called from QUnit for every assert
@@ -24,6 +25,7 @@
 	//		tests : [{ 
 	//			name : 'The test that run',
 	//			result : false,
+	//			runtime : 220,
 	//			actual : 'afas',
 	//			expected : 'asdfasdf',
 	//			message : 'blubbbb',
@@ -32,12 +34,21 @@
 	//	}
 	
 	/**
+	 * Called on start of a test, we use it to measure the test time
+	 */
+	window.QUnit.testStart = function(name) {
+		lastStart = new Date().getTime();
+	}
+	
+	/**
 	 * Called for every finished QUnit test
 	 */
 	window.QUnit.testDone = function(result) {
+		var runtime = new Date().getTime() - lastStart;
 		var test = {
 			name : result.name,
-			result : (result.failed > 0) ? false : true
+			result : (result.failed > 0) ? false : true,
+			runtime : runtime
 		};
 		if (test.result === false) {
 			test.actual = lastFailed.actual;

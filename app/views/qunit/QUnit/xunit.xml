@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite failures="${result.summary.failed}" time="${result.summary.runtime}" errors="0" skipped="0" tests="${result.summary.total}" name="${result.getFQName()}">
+<testsuite failures="${result.summary.failed}" time="${result.summary.runtime / 1000}" errors="0" skipped="0" tests="${result.summary.total}" name="${result.getFQName()}">
 #{list items:result.tests, as:'test'}
-  <testcase name="${test.name.escapeXml()}">
+  <testcase name="${test.name.escapeXml()}" time="${test.runtime / 1000}">
     #{if !test.result}
         <failure type="" message="${test.errorMessage().escapeXml()}">
         <![CDATA[
