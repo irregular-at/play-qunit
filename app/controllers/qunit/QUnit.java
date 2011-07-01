@@ -9,8 +9,10 @@ import java.util.LinkedList;
 import models.qunit.TestResult;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.Before;
 
 import play.Play;
+import play.modules.qunit.QUnitPlugin;
 import play.mvc.Controller;
 import play.mvc.results.RenderTemplate;
 import play.templates.Template;
@@ -22,6 +24,13 @@ import com.google.gson.JsonParser;
 
 public class QUnit extends Controller {
 
+	@Before
+	public static void checkEnabled() {
+		if (!QUnitPlugin.enabled) {
+			notFound();
+		}
+	}
+	
 	/**
 	 * List of the available qunit tests.
 	 */
