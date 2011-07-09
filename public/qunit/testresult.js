@@ -65,9 +65,11 @@
 	 * Called from QUnit when the whole test file is finished
 	 */
 	window.QUnit.done = function(result) {
-		testRunner.testFinished({
-			summary : result,
-			tests : tests
-		});
+		if (typeof testRunner.testFinished === 'function') {
+			testRunner.testFinished({
+				summary : result,
+				tests : tests
+			});
+		}
 	};
 })();
