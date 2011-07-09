@@ -4,3 +4,6 @@
 # *     /                       module:qunit
 #
 # ~~~~
+GET			/@qunit					qunit.Qunit.list
+GET			/@qunit/run{<.*>test}	qunit.Qunit.run
+POST		/@qunit/result			qunit.Qunit.result
