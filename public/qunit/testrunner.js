@@ -129,6 +129,21 @@ $(function() {
 	window.testFinished = function (result) {
 		var test = $('.test.selected:not(.passed,.failed):first');
 		
+		//If no test was run, display an error
+		if (result.summary.total === 0) {
+			result.summary.failed = 1;
+			result.summary.total = 1;
+			result.tests = [{ 
+				name : 'No tests available',
+				result : false,
+				runtime : 0,
+				actual : '0',
+				expected : '>=1',
+				message : 'No tests have been executed',
+				source: ''
+			}];
+		}
+		
 		$('#qunit,#qunit-mask').hide();
 		
 		var html = ((result.summary.failed === 0) ? 'No' : ('<strong>' + result.summary.failed + '</strong>')) 
